@@ -1,37 +1,36 @@
-# hypercore-promisifier
-![Test on Node.js](https://github.com/andrewosh/hypercore-promisifier/workflows/Test%20on%20Node.js/badge.svg)
+# unichain-promisifier
 
-A wrapper that provides conversion to/from callback/promise interfaces in Hypercore and RemoteHypercore.
+A wrapper that provides conversion to/from callback/promise interfaces in Unichain and RemoteUnichain.
 
 ## Installation
 ```
-npm i hypercore-promisifier
+npm i @web4/unichain-promisifier
 ```
 
 ## Usage
 ```js
-const hypercore = require('hypercore')
+const unichain = require('@web4/unichain')
 const ram = require('random-access-memory')
-const { toPromises } = require('hypercore-promisifier')
+const { toPromises } = require('@web4/unichain-promisifier')
 
-const core = hypercore(ram)
+const chain = unichain(ram)
 
-// A promisified Hypercore interface
-const wrapper = toPromises(core)
+// A promisified Unichain interface
+const wrapper = toPromises(chain)
 ```
 
 ## API
-The API supports two methods, each one returning a compatibilty wrapper around Hypercore.
+The API supports two methods, each one returning a compatibilty wrapper around Unichain.
 
-#### `const { toCallbacks, toPromises, unwrap } = require('hypercore-promisifier')`
+#### `const { toCallbacks, toPromises, unwrap } = require('@web4/unichain-promisifier')`
 
-`toCallbacks(core)` takes a Hypercore-like object with a Promises API, and returns a wrapper with a
+`toCallbacks(chain)` takes a Unichain-like object with a Promises API, and returns a wrapper with a
 callbacks interfaced.
 
-`toPromises(core)` takes a Hypercore-like object with a callbacks API, and returns a wrapper with a
+`toPromises(chain)` takes a Unichain-like object with a callbacks API, and returns a wrapper with a
 Promises interface.
 
-`unwrap(core)` takes either a wrapper object, or a normal Hypercore, and returns a normal (callbacks API) Hypercore.
+`unwrap(chain)` takes either a wrapper object, or a normal Unichain, and returns a normal (callbacks API) Unichain.
 
 ## License
 MIT

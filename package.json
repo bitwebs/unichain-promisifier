@@ -1,28 +1,28 @@
 {
-  "name": "hypercore-promisifier",
-  "version": "1.1.0",
-  "description": "A Hypercore wrapper that lets you switch between callback and Promise APIs",
+  "name": "@web4/unichain-promisifier",
+  "version": "1.0.0",
+  "description": "A Unichain wrapper that lets you switch between callback and Promise APIs",
   "main": "index.js",
   "scripts": {
     "test": "standard && tape test/*.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/andrewosh/hypercore-promisifier.git"
+    "url": "git+https://github.com/bitwebs/unichain-promisifier.git"
   },
   "keywords": [
-    "hypercore",
+    "unichain",
     "promises"
   ],
   "author": "Andrew Osheroff <andrewosh@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/andrewosh/hypercore-promisifier/issues"
+    "url": "https://github.com/bitwebs/unichain-promisifier/issues"
   },
-  "homepage": "https://github.com/andrewosh/hypercore-promisifier#readme",
+  "homepage": "https://github.com/bitwebs/unichain-promisifier#readme",
   "devDependencies": {
-    "hypercore": "^9.6.0",
-    "hyperspace": "^3.15.0",
+    "@web4/unichain": "^1.0.0",
+    "@web4/bitspace": "^1.0.0",
     "ram": "0.0.3",
     "standard": "^16.0.3",
     "tape": "^5.0.1"

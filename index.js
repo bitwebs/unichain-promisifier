@@ -2,70 +2,70 @@ const { EventEmitter } = require('events')
 const maybe = require('call-me-maybe')
 const inspect = require('inspect-custom-symbol')
 
-const SUPPORTS_PROMISES = Symbol.for('hypercore.promises')
-const CORE = Symbol('hypercore-promisifier.core')
-const REQUEST = Symbol('hypercore-promisifier.request')
+const SUPPORTS_PROMISES = Symbol.for('unichain.promises')
+const CHAIN = Symbol('unichain-promisifier.chain')
+const REQUEST = Symbol('unichain-promisifier.request')
 
 class BaseWrapper extends EventEmitter {
-  constructor (core) {
+  constructor (chain) {
     super()
-    this[CORE] = core
+    this[CHAIN] = chain
     this.on('newListener', (eventName, listener) => {
-      core.on(eventName, listener)
+      chain.on(eventName, listener)
     })
     this.on('removeListener', (eventName, listener) => {
-      core.removeListener(eventName, listener)
+      chain.removeListener(eventName, listener)
     })
   }
 
   [inspect] (depth, opts) {
-    return this[CORE][inspect](depth, opts)
+    return this[CHAIN][inspect](depth, opts)
   }
 
   get key () {
-    return this[CORE].key
+    return this[CHAIN].key
   }
 
   get discoveryKey () {
-    return this[CORE].discoveryKey
+    return this[CHAIN].discoveryKey
   }
 
   get length () {
-    return this[CORE].length
+    return this[CHAIN].length
   }
 
   get byteLength () {
-    return this[CORE].byteLength
+    return this[CHAIN].byteLength
   }
 
   get writable () {
-    return this[CORE].writable
+    return this[CHAIN].writable
   }
 
   get sparse () {
-    return this[CORE].sparse
+    return this[CHAIN].sparse
   }
 
   get peers () {
-    return this[CORE].peers
+    return this[CHAIN].peers
   }
 
   get valueEncoding () {
-    return this[CORE].valueEncoding
+    return this[CHAIN].valueEncoding
   }
 
   get weak () {
-    return this[CORE].weak
+    return this[CHAIN].weak
   }
 
   get lazy () {
-    return this[CORE].lazy
+    return this[CHAIN].lazy
   }
 }
 
-class CallbackToPromiseHypercore extends BaseWrapper {
-  constructor (core) {
-    super(core)
+class CallbackToPromiseUnichain extends BaseWrapper {
+  constructor (chain) {
+    super(chain)
     this[SUPPORTS_PROMISES] = true
   }
 
@@ -73,7 +73,7 @@ class CallbackToPromiseHypercore extends BaseWrapper {
 
   ready () {
     return alwaysCatch(new Promise((resolve, reject) => {
-      this[CORE].ready(err => {
+      this[CHAIN].ready(err => {
         if (err) return reject(err)
         return resolve(null)
       })
@@ -82,7 +82,7 @@ class CallbackToPromiseHypercore extends BaseWrapper {
 
   close () {
     return alwaysCatch(new Promise((resolve, reject) => {
-      this[CORE].close(err => {
+      this[CHAIN].close(err => {
         if (err) return reject(err)
         return resolve(null)
       })
@@ -92,7 +92,7 @@ class CallbackToPromiseHypercore extends BaseWrapper {
   get (index, opts) {
     let req = null
     const prom = new Promise((resolve, reject) => {
-      req = this[CORE].get(index, opts, (err, block) => {
+      req = this[CHAIN].get(index, opts, (err, block) => {
         if (err) return reject(err)
         return resolve(block)
       })
@@ -103,7 +103,7 @@ class CallbackToPromiseHypercore extends BaseWrapper {
 
   append (batch) {
     return alwaysCatch(new Promise((resolve, reject) => {
-      this[CORE].append(batch, (err, seq) => {
+      this[CHAIN].append(batch, (err, seq) => {
         if (err) return reject(err)
         return resolve(seq)
       })
@@ -112,7 +112,7 @@ class CallbackToPromiseHypercore extends BaseWrapper {
 
   update (opts) {
     return alwaysCatch(new Promise((resolve, reject) => {
-      this[CORE].update(opts, err => {
+      this[CHAIN].update(opts, err => {
         if (err) return reject(err)
         return resolve(null)
       })
@@ -121,7 +121,7 @@ class CallbackToPromiseHypercore extends BaseWrapper {
 
   seek (bytes, opts) {
     return new Promise((resolve, reject) => {
-      this[CORE].seek(bytes, opts, (err, index, relativeOffset) => {
+      this[CHAIN].seek(bytes, opts, (err, index, relativeOffset) => {
         if (err) return reject(err)
         return resolve([index, relativeOffset])
       })
@@ -131,7 +131,7 @@ class CallbackToPromiseHypercore extends BaseWrapper {
   download (range) {
     let req = null
     const prom = alwaysCatch(new Promise((resolve, reject) => {
-      req = this[CORE].download(range, err => {
+      req = this[CHAIN].download(range, err => {
         if (err) return reject(err)
         return resolve(null)
       })
@@ -142,7 +142,7 @@ class CallbackToPromiseHypercore extends BaseWrapper {
 
   has (start, end) {
     return new Promise((resolve, reject) => {
-      this[CORE].has(start, end, (err, res) => {
+      this[CHAIN].has(start, end, (err, res) => {
         if (err) return reject(err)
         return resolve(res)
       })
@@ -151,7 +151,7 @@ class CallbackToPromiseHypercore extends BaseWrapper {
 
   audit () {
     return new Promise((resolve, reject) => {
-      this[CORE].audit((err, report) => {
+      this[CHAIN].audit((err, report) => {
         if (err) return reject(err)
         return resolve(report)
       })
@@ -160,7 +160,7 @@ class CallbackToPromiseHypercore extends BaseWrapper {
 
   destroyStorage () {
     return new Promise((resolve, reject) => {
-      this[CORE].destroyStorage(err => {
+      this[CHAIN].destroyStorage(err => {
         if (err) return reject(err)
         return resolve(null)
       })
@@ -170,122 +170,122 @@ class CallbackToPromiseHypercore extends BaseWrapper {
   // Sync Methods
 
   createReadStream (opts) {
-    return this[CORE].createReadStream(opts)
+    return this[CHAIN].createReadStream(opts)
   }
 
   createWriteStream (opts) {
-    return this[CORE].createWriteStream(opts)
+    return this[CHAIN].createWriteStream(opts)
   }
 
   undownload (range) {
-    return this[CORE].undownload(range[REQUEST] || range)
+    return this[CHAIN].undownload(range[REQUEST] || range)
   }
 
   cancel (range) {
-    return this[CORE].cancel(range[REQUEST] || range)
+    return this[CHAIN].cancel(range[REQUEST] || range)
   }
 
   replicate (initiator, opts) {
-    return this[CORE].replicate(initiator, opts)
+    return this[CHAIN].replicate(initiator, opts)
   }
 
   registerExtension (name, handlers) {
-    return this[CORE].registerExtension(name, handlers)
+    return this[CHAIN].registerExtension(name, handlers)
   }
 
   setUploading (uploading) {
-    return this[CORE].setUploading(uploading)
+    return this[CHAIN].setUploading(uploading)
   }
 
   setDownloading (downloading) {
-    return this[CORE].setDownloading(downloading)
+    return this[CHAIN].setDownloading(downloading)
   }
 }
 
-class PromiseToCallbackHypercore extends BaseWrapper {
-  constructor (core) {
-    super(core)
+class PromiseToCallbackUnichain extends BaseWrapper {
+  constructor (chain) {
+    super(chain)
     this[SUPPORTS_PROMISES] = false
   }
 
   // Async Methods
 
   ready (cb) {
-    return maybeOptional(cb, this[CORE].ready())
+    return maybeOptional(cb, this[CHAIN].ready())
   }
 
   close (cb) {
-    return maybeOptional(cb, this[CORE].close())
+    return maybeOptional(cb, this[CHAIN].close())
   }
 
   get (index, opts, cb) {
-    const prom = this[CORE].get(index, opts)
+    const prom = this[CHAIN].get(index, opts)
     maybe(cb, prom)
     return prom
   }
 
   append (batch, cb) {
-    return maybeOptional(cb, this[CORE].append(batch))
+    return maybeOptional(cb, this[CHAIN].append(batch))
   }
 
   update (opts, cb) {
-    return maybeOptional(cb, this[CORE].update(opts))
+    return maybeOptional(cb, this[CHAIN].update(opts))
   }
 
   seek (bytes, opts, cb) {
-    return maybe(cb, this[CORE].seek(bytes, opts))
+    return maybe(cb, this[CHAIN].seek(bytes, opts))
   }
 
   download (range, cb) {
-    const prom = this[CORE].download(range)
+    const prom = this[CHAIN].download(range)
     maybeOptional(cb, prom)
     return prom
   }
 
   has (start, end, cb) {
-    return maybe(cb, this[CORE].has(start, end))
+    return maybe(cb, this[CHAIN].has(start, end))
   }
 
   audit (cb) {
-    return maybe(cb, this[CORE].audit())
+    return maybe(cb, this[CHAIN].audit())
   }
 
   destroyStorage (cb) {
-    return maybe(cb, this[CORE].destroyStorage())
+    return maybe(cb, this[CHAIN].destroyStorage())
   }
 
   // Sync Methods
 
   createReadStream (opts) {
-    return this[CORE].createReadStream(opts)
+    return this[CHAIN].createReadStream(opts)
   }
 
   createWriteStream (opts) {
-    return this[CORE].createWriteStream(opts)
+    return this[CHAIN].createWriteStream(opts)
   }
 
   undownload (range) {
-    return this[CORE].undownload(range)
+    return this[CHAIN].undownload(range)
   }
 
   cancel (range) {
-    return this[CORE].cancel(range)
+    return this[CHAIN].cancel(range)
   }
 
   replicate (initiator, opts) {
-    return this[CORE].replicate(initiator, opts)
+    return this[CHAIN].replicate(initiator, opts)
   }
 
   registerExtension (name, handlers) {
-    return this[CORE].registerExtension(name, handlers)
+    return this[CHAIN].registerExtension(name, handlers)
   }
 
   setUploading (uploading) {
-    return this[CORE].setUploading(uploading)
+    return this[CHAIN].setUploading(uploading)
   }
 
   setDownloading (downloading) {
-    return this[CORE].setDownloading(downloading)
+    return this[CHAIN].setDownloading(downloading)
   }
 }
 
@@ -295,16 +295,16 @@ module.exports = {
   unwrap
 }
 
-function toPromises (core) {
-  return core[SUPPORTS_PROMISES] ? core : new CallbackToPromiseHypercore(core)
+function toPromises (chain) {
+  return chain[SUPPORTS_PROMISES] ? chain : new CallbackToPromiseUnichain(chain)
 }
 
-function toCallbacks (core) {
-  return core[SUPPORTS_PROMISES] ? new PromiseToCallbackHypercore(core) : core
+function toCallbacks (chain) {
+  return chain[SUPPORTS_PROMISES] ? new PromiseToCallbackUnichain(chain) : chain
 }
 
-function unwrap (core) {
-  return core[CORE] || core
+function unwrap (chain) {
+  return chain[CHAIN] || chain
 }
 
 function maybeOptional (cb, prom) {
