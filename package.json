@@ -1,6 +1,6 @@
 {
   "name": "@web4/unichain-promisifier",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Unichain wrapper that lets you switch between callback and Promise APIs",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "homepage": "https://github.com/bitwebs/unichain-promisifier#readme",
   "devDependencies": {
     "@web4/unichain": "^1.0.0",
-    "@web4/bitspace": "^1.0.0",
+    "bitspace": "^1.0.0",
     "ram": "0.0.3",
     "standard": "^16.0.3",
     "tape": "^5.0.1"
